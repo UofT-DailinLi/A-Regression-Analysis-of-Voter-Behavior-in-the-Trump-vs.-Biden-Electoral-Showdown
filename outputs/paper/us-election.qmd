@@ -1,0 +1,13 @@
+---
+title: "Forecasting the Future: A Regression Analysis of Voter Behavior in the Trump vs. Biden Electoral Showdown"
+title-block-banner: true
+thanks: "Code and data supporting this analysis is available at: https://github.com/UofT-DailinLi/A-Regression-Analysis-of-Voter-Behavior-in-the-Trump-vs.-Biden-Electoral-Showdown.git"
+author: "Ben Li"
+date: today
+date-format: long
+editor: visual
+format: pdf
+toc: TRUE
+number-sections: true
+bibliography: ref.bib
+---
