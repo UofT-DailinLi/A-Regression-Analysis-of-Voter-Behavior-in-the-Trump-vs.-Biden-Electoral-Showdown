@@ -8,7 +8,7 @@ date-format: long
 editor: visual
 format: pdf
 toc: TRUE
-abstract: "This study employs logistic regression to analyze the factors influencing American voters in the 2020 presidential election, focusing on key demographics like education and income. We discover that higher education levels strongly correlate with voting for Biden, while income shows varied influences across different brackets. These insights underscore the complexity of political choices, influenced not only by socioeconomic status but also by deeper, less tangible societal currents. Ultimately, this paper sheds light on the intricate tapestry of American electoral behavior, signaling the need for political strategies that resonate with an electorate's diverse and multifaceted nature."
+abstract: "This study employs logistic regression to analyze the factors influencing American voters in the 2020 presidential election, focusing on key demographics like education and income. We discover that higher education levels strongly correlate with voting for Biden, while income demonstrates varied influences across different brackets. These insights underscore the complexity of political choices, influenced not only by socioeconomic status but also by deeper, less tangible societal currents. Ultimately, this paper sheds light on the complexity of American electoral behavior, signaling the need for political strategies that resonate with an electorate's diverse and multifaceted nature."
 number-sections: true
 bibliography: ref.bib
 ---
@@ -30,7 +30,6 @@ library(forcats)
 library(caret)     
 library(e1071)  
 library(pROC)
-
 library(broom)
 
 ```
@@ -51,7 +50,7 @@ The U.S. presidential election is one of the world's most closely watched politi
 
 The reason why logistic regression was chosen to be used is because the dependent variable, the choice of vote, is inherently binary, voting for either Donald Trump or Joe Biden. Logistic regression is suitable for modelling situations where the outcome is binary, therefore effectively predicting the vote for the two primary candidates. The impact of multiple factors on the vote is captured by considering a range of independent variables, such as demographic characteristics (age, gender, education level, etc.) and social and economic background (income, health care, etc.). This analysis is not only of academic interest but also invaluable to political campaigners in understanding the impact of multiple factors on voter decision-making, campaign strategies, and targeted campaign messages. Policymakers can also learn from voter dynamics, such as those in swing states where small changes in voter preferences can change the outcome of an election.
 
-This report is structured first to present the @sec-data, which is used to analyze, process, and discover the data, and includes a data visualization of the variables of interest. The @sec-model, which presents simple logistic regression models used to demonstrate the relationship between demographic characteristics and voter outcomes. The @sec-results is a parse of the model and an analysis of the model summary data. The @sec-discussion discusses the study's findings, this paper's shortcomings, and future directions and potential possibilities.
+This report gegain with @sec-data, which is used to analyze, process, and discover the data, and includes a data visualization of the variables of interest. @sec-model presents simple logistic regression models used to demonstrate the relationship between demographic characteristics and voter outcomes. @sec-results is a parse of the model and an analysis of the model summary data. @sec-discussion discusses the study's findings, this paper's shortcomings, and future directions and potential possibilities.
 
 # Data {#sec-data}
 
@@ -60,11 +59,13 @@ This report is structured first to present the @sec-data, which is used to analy
 The dataset used in this study is from the American National Election Study (ANES) 2020 time series, which was obtained through the Intercollegiate Consortium for Political and Social Research (ICPSR)[@icpsr2020summary]. This site is open source and can be downloaded by visiting their website. The dataset was obtained through a questionnaire that included web, phone, and video contact with respondents. The ANES is designed to collect and analyze data on Americans' demographic characteristics, social attitudes, and political behaviour. The purpose is to understand voters' social backgrounds, values, and political opinions better. In the tradition of time-series studies, ANES conducts interviews during presidential election years. The present dataset is from 2020 and consists of two phases of interviews: pre-election interviews conducted two months before the November election and post-election interviews conducted two months after the election. This design approach aims to capture better the discrepancy between voters' expectations and the final outcome, providing a dynamic analytical perspective on the electoral process and its impact. The original dataset consisted of 257 variables and 7453 observations.
 
 
-This paper was produced using the R statistical programming language [@citeR] and using here [@here] to reference file locations . The data was examined and cleaned using the packages janitor [@janitor], dplyr [@dplyr], and tidyverse [@tidyverse]. Tables were made knitr [@knitr] , and formatted with kableExtra [@kableExtra]. ggplot2 [@ggplot2] was used to plot and scale the graphs.
+The original paper used R [@citeR] for data processing and analysis in its replication package, we use R [@citeR] as well for all data wrangling and analysis and R packages tidyverse [@tidyverse], modelsummary[@modelsummary], knitr[@knitr], here[@here], ggplot2[@ggplot2], dplyr[@dplyr],kableExtra[@kableExtra],readr[@readr], ggplot2[@ggplot2], forcats[@forcats], caret[@caret], e1071[@e1071], pROC[@pROC], broom[@broom] to produce the figures and models.
+
+
 
 
 ## Variables of Interest
-Before modelling, we need to select the variables of interest to be analyzed; this way, reducing the number of variables can help simplify the model and make it easier to interpret while maintaining stability. Similarly, we need to remove observations with missing data to reduce the impact of incomplete data on the model. By screening, variables that are irrelevant to the research question are selected to ensure that the factors that influence the voting are selected. Highly correlated independent variables are avoided to avoid distortions to the model and the influence of independent variables on each other. Ultimately, we found seven variables and 5832 observations after screening and cleaning the data. 
+Before modelling, we need to select the variables of interest to be analyzed; this way, reducing the number of variables can help simplify the model and make it easier to interpret while maintaining stability. Similarly, we need to remove observations with missing data to reduce the impact of incomplete data on the model. By screening, variables that are relevant to the research question are selected. Highly correlated independent variables are avoided to avoid distortions to the model and the influence of independent variables on each other. Ultimately, we found seven variables and 5832 observations after screening and cleaning the data. 
 
 
 
@@ -89,7 +90,7 @@ From table 1 we can see the cleaned dataset, and the seven variables are
 
 3. **Marital_Status (R13)**: Describes the marital status of the respondent, including categories such as Married, Widowed, Divorced, Separated, and Never married, each represented by a numeric code.
 
-4. **Household_Income (R12)**: Represents the total household income bracket of the respondent, with categories ranging from "Less than $20,000" to "$125,000 or more", coded numerically.
+4. **Household_Income (R12)**: Represents the total household income bracket of the respondent, with categories ranging from "Less than $20,000" to "$125,000 or more".
 
 5. **Education_Level (R11)**: Reflects the highest level of education achieved by the respondent, from "Less than high school credential" to "Graduate degree".
 
@@ -152,7 +153,7 @@ plot_vote_shares(high_income_data, "Vote Share for High Income Tiers")
 
 ```
 
-According to the two bar charts in @fig-lowincome and @fig-highincome, which show the vote share of Trump and Biden's voting elections in the high-income and low-income tiers, respectively,  We categorize "$20,000 to 34,999" and "less than $20,000" as the low-income tier, and "$100,000 to 124,999" and "$125,000 or more" as the high-income tier. @fig-lowincome represents the vote share of low-income individuals. From the income bracket of "$20,000 to 34,999," we can observe that Trump and Biden will be relatively close, with a more even vote share. Among voters with incomes "less than $20,000", we can see that Biden's vote share is significantly higher than Trump's, which means that people with the lowest incomes represented by the data would be more inclined to choose Biden as president. While @fig-highincome represents the high-income people, we can find through the chart that in the "$100,000 to 124,999" income bracket, Trump and Biden's vote share is relatively close to Trump's (in red) and slightly lower than Biden's. In the higher income bracket of "$125,000 or more," Biden's vote share dramatically exceeds Trump's.
+According to the two bar charts in @fig-lowincome and @fig-highincome, which show the vote share of Trump and Biden's voting elections in the high-income and low-income tiers, respectively,  We categorize "$20,000 to 34,999" and "less than $20,000" as the low-income tier, and "$100,000 to 124,999" and "$125,000 or more" as the high-income tier. @fig-lowincome represents the vote share of low-income individuals. From the income bracket of "$20,000 to 34,999," we can observe that Trump and Biden will be relatively close, with a more even vote share. Among voters with incomes "less than $20,000", we can see that Biden's vote share is significantly higher than Trump's, which means that people with the lowest incomes represented by the data would be more inclined to choose Biden as president. While @fig-highincome represents the high-income people, we can find through the chart that in the "$100,000 to 124,999" income bracket, Trump and Biden's vote share is relatively close to each other. In the higher income bracket of "$125,000 or more," Biden's vote share dramatically exceeds Trump's.
 
 The data visualization shows that Joe Biden would have a higher percentage of votes in both the highest and lowest income brackets. In contrast, the percentage of votes in the middle and upper-income brackets would be relatively balanced. The visualization suggests that the economic factors behind household income may influence voting preferences in elections, with the two extremes of low and high incomes favouring Biden more. At the same time, the middle and upper-income tiers are more balanced. This result is also common sense.
 
@@ -177,7 +178,6 @@ Where:
 In the field of predictive analytics, the logistic regression model is a stable and widely used model that can explain the relationship between a binary outcome variable and multiple independent variables well. Moreover, logistic regression is particularly suitable for binary situations, such as elections, where the direction of the study is to choose between two presidential candidates. In contrast, linear regression predictions may exceed the possible range of 0-1. Logistic regression does not and is more stable than linear regression when predicting binary outcomes. The principle of logistic regression is to provide a coefficient for each predictor. By quantifying its log probability impact on the outcome (in this study, the outcome of the vote for a particular candidate) and understanding how each factor has an impact on the voter's voting preference, and by converting log odds to probabilities, we can predict the voter's voting preference through a logistic regression model.
 
 # Results {#sec-results}
-\newpage
 
 ```{r}
 #| include: false
@@ -231,7 +231,7 @@ plot(roc_obj, main=paste("ROC Curve for Logistic Regression Model\nAUC =", auc_v
 
 ```
 
-@fig-auc shows the Receiver Operating Characteristic Curve (ROC) of a logistic regression model used to predict voter behaviour based on household income, gender, age, marital status, and education level, i.e., whether or not an individual voted for Biden. The dataset for this study utilized the typical 80-20 data split method, where 80% of the data was used to train the model, and the remaining 20% was used to test the model's accuracy. The roc curve above is used to illustrate how the diagnostic ability of a binary classifier system varies with its discrimination threshold. It includes two parameters:
+@fig-auc shows the Receiver Operating Characteristic Curve (ROC) of a logistic regression model used to predict voter behaviour based on household income, gender, age, marital status, and education level. The dataset for this study utilized the typical 80-20 data split method, where 80% of the data was used to train the model, and the remaining 20% was used to test the model's accuracy. The roc curve above is used to illustrate how the diagnostic ability of a binary classifier system varies with its discrimination threshold. It includes two parameters:
 
 - **True Positive Rate (Sensitivity)**: The proportion of actual positives (votes for Biden) correctly identified by the model, plotted on the y-axis.
 - **False Positive Rate (1 - Specificity)**: The proportion of actual negatives (votes not for Biden) incorrectly classified as positive, plotted on the x-axis.
@@ -280,7 +280,7 @@ ggplot(tidy_model, aes(x = reorder(variable, importance), y = importance)) +
 
 ## Summary of Findings {#sec-first-point}
 
-This study aims to use logistic regression to analyze the decision-making preferences of voters in the 2020 U.S. presidential election. By analyzing a dataset containing demographic and socio-economic indicators of several voters, we illustrate the relationship between these factors and the likelihood of voting for Joe Biden or Donald Trump. Our modelling confirms that demographic characteristics, such as household income, education, etc., impact voters' decisions. According to Lewis-Beck and Rice's model, the prediction of economic status and candidate popularity on future votes was measured[@abramowitz1988improved]. Our conclusions coincide with Lewis-Beck and Rice's findings.
+This study aims to use logistic regression to analyze the decision-making preferences of voters in the 2020 U.S. presidential election. By analyzing a dataset containing demographic and socio-economic indicators of several voters, we illustrate the relationship between these factors and the likelihood of voting for Joe Biden or Donald Trump. Our modelling confirms that demographic characteristics, such as household income, education, etc., impact voters' decisions. According to Lewis-Beck and Rice's model, the prediction of economic status and candidate popularity are related to future votes [@abramowitz1988improved]. Our conclusions coincide with Lewis-Beck and Rice's findings.
 
 ## Insights into Voter Behavior {#sec-second-point}
 
@@ -295,11 +295,11 @@ The knowledge gained in this study is not only limited to statistics but also in
 
 ### Weaknesses {#sec-weaknesses}
 
- Despite our insights, this analysis has limitations, and the model's discriminatory power is average in terms of AUC values. This suggests that the model has a lot of room for improvement. In addition, the selection of variables relies mainly on perceived screening. It does not allow for a systematic and accurate analysis of which factors should be covered in the model using advanced machine learning models. So, by manual screening, we have limitations in selecting six demographic characteristics from 257 variables. At the same time, the nature of the data was obtained by self-reporting, a method that is likely to bring inaccuracies in the data and thus have an impact on the model and while the logistic regression coefficients may overemphasize certain levels in the categorical variables, thus skewing the predictions of the model.
+ Despite our insights, this analysis has limitations, and the model's discriminatory power is average in terms of AUC values. This suggests that the model has a lot of room for improvement. In addition, the selection of variables relies mainly on manual screening. It does not allow for a systematic and accurate analysis of which factors should be covered in the model using advanced machine learning models. So, by manual screening, we have limitations in selecting six demographic characteristics from 257 variables. At the same time, the nature of the data was obtained by self-reporting, a method that is likely to bring inaccuracies in the data and thus have an impact on the model and while the logistic regression coefficients may overemphasize certain categorical variables, thus skewing the predictions of the model.
 
 ### Next Steps {#sec-next-steps}
 
-Future research directions can be adapted to more complex models, e.g. through machine learning, and to consider the impact of public opinion and media influence on voting. For example, one could analyze the potential impact of twitter comments on voting during an election, and its possible to analyze deeper levels of people's mental activity as well as their emotions. Our research is going to try to incorporate more unquantifiable dimensions, trying to incorporate these multifaceted factors - psychological, media-driven, campaign-related, and faith-based factors. As our understanding of these dynamics deepens, so will our ability to more accurately predict election outcomes.
+Future research directions can be adapted to more complex models, e.g. through machine learning, and to consider the impact of public opinion and media influence on voting. For example, one could analyze the potential impact of twitter comments on voting during an election, and its possible to analyze deeper levels of people's mental activity as well as their emotions. Further research is going to try to incorporate more unquantifiable dimensions, trying to incorporate these multifaceted factors - psychological, media-driven, campaign-related, and faith-based factors. As our understanding of these dynamics deepens, so will our ability to more accurately predict election outcomes.
 
 \newpage
 

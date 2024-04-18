@@ -1,0 +1,52 @@
+---
+title: "Forecasting the Future: A Regression Analysis of Voter Behavior in the Trump vs. Biden Electoral Showdown"
+
+author: 
+  - Dailin(Bne) Li
+  
+thanks: "Code and data are available at: https://github.com/UofT-DailinLi/A-Regression-Analysis-of-Voter-Behavior-in-the-Trump-vs.-Biden-Electoral-Showdown.git"
+date: "`r format(Sys.time(), '%d %B %Y')`"
+abstract: "First sentence. Second sentence. Third sentence. Fourth sentence."
+output:
+  bookdown::pdf_document2
+toc: FALSE
+bibliography: ref2.bib
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+The data set was downloaded from ICPSR ANES 2020 Time Series Study (ICPSR 38034)
+
+### 1. **Motivation**
+   - **Purpose**: The 2020 ANES was created to track long-term trends and understand specific political circumstances of the 2020 election year, including perceptions of the coronavirus pandemic, election integrity, and issues related to policing and racism. It aims to provide data on Americans' political beliefs, allegiances, and behaviors to facilitate a comprehensive understanding of political dynamics.
+   - **Creators and Funding**: The ANES is a longstanding project conducted by political scientists, usually associated with major academic institutions and typically funded by national research foundations along with governmental agencies focused on the social sciences.
+
+### 2. **Composition**
+   - **Instance Representation**: Each instance in the dataset represents an individual respondent's answers to a series of questions regarding their political views, demographic information, and their perceptions of current events.
+   - **Total Instances**: The dataset features a fresh cross-sectional sample of respondents randomly assigned to one of three sequential mode groups, though the exact number of instances (respondents) is not specified here and would typically be detailed in the dataset's technical documentation.
+
+### 3. **Collection Process**
+   - **Data Collection Methods**: Respondents were interviewed twice, pre-election and post-election, using web-only, mixed web (web and phone), and mixed video (video, web, and phone) methods.
+   - **Validation and Verification**: The use of trained interviewers and computer-assisted personal interviewing (CAPI) software ensures data reliability and consistency in response collection.
+
+### 4. **Preprocessing/Cleaning/Labeling**
+   - **Data Processing**: Specific preprocessing steps are not detailed in the description but typically involve validating responses, handling missing data, and ensuring consistency across different interviewing modes.
+
+### 5. **Uses**
+   - **Previous Uses**: Used in academic and policy-making circles to analyze political trends and behaviors over time.
+   - **Potential Uses**: Apart from studying political trends, the dataset can be used to examine sociological impacts of current events, such as the pandemic and social unrest, on political beliefs and behaviors.
+
+### 6. **Distribution**
+   - **Access and Licensing**: While not detailed here, ANES data is generally made available through the ANES website, with usage governed by specific terms of use that ensure the ethical handling of respondent data.
+
+### 7. **Maintenance**
+   - **Updates and Maintenance**: Given its scope, the ANES dataset is updated every election cycle, incorporating new questions relevant to the current political climate while maintaining core questions for longitudinal analysis.
+
+This outline captures the general approach to handling the dataset based on the practices commonly associated with large-scale academic surveys like the ANES. More specific details would require access to the dataset's full documentation, typically available through the ANES or associated academic portals.
+\newpage
+
+# References
