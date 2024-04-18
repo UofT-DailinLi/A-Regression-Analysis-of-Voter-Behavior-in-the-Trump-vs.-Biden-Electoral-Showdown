@@ -31,6 +31,8 @@ library(caret)
 library(e1071)  
 library(pROC)
 
+library(broom)
+
 ```
 
 ```{r}
@@ -185,7 +187,7 @@ election_model <- readRDS(here::here("outputs/models/election_model.rds"))
 
 ```
 
-```{r fig.pos='H'}
+```{r }
 #| label: fig-auc
 #| fig-cap: ROC Curve for Logistic Regression Model
 #| echo: false
@@ -229,8 +231,49 @@ plot(roc_obj, main=paste("ROC Curve for Logistic Regression Model\nAUC =", auc_v
 
 ```
 
-@tbl-prodvocabmodelsum shows the coefficients of the predictor variables of Model 1. We are concerned with the top half of this table, as it provides the values of the coefficient representing the intercept as well as the coefficient representing the rate at which the number of produced ASL vocabulary items changes with respect to age in months. The standard errors of the estimated coefficients are also included in brackets. This is also provided visually in @fig-prodwordsmodel by the means of the grey area surrounding the regression line, presenting the degree of error in the prediction. As seen in @fig-prodwordsmodel, there is no intercept in the model. Under these circumstances, the intercept can be disregarded, as there is no value of 0 within the range of the independent variable, age in months. The spectrum of months explored in this model is between the early age of 12 months old to 36 months old. It is important to note that we specify the estimated relationship between the independent variable and the dependent variable. We, therefore, took thee estimated relationship to the available data in order to estimate the coefficients of the model. Hence why the coefficient value for *age_in_months* is close to our estimated relationship value.
+@fig-auc shows the Receiver Operating Characteristic Curve (ROC) of a logistic regression model used to predict voter behaviour based on household income, gender, age, marital status, and education level, i.e., whether or not an individual voted for Biden. The dataset for this study utilized the typical 80-20 data split method, where 80% of the data was used to train the model, and the remaining 20% was used to test the model's accuracy. The roc curve above is used to illustrate how the diagnostic ability of a binary classifier system varies with its discrimination threshold. It includes two parameters:
 
+- **True Positive Rate (Sensitivity)**: The proportion of actual positives (votes for Biden) correctly identified by the model, plotted on the y-axis.
+- **False Positive Rate (1 - Specificity)**: The proportion of actual negatives (votes not for Biden) incorrectly classified as positive, plotted on the x-axis.
+
+The "AUC" (Area Under the Curve) of this graph quantifies the overall ability of the test data to distinguish between voting for Biden (positive) and not voting for Biden, which is also known as supporting Trump (negative). The value of the AUC ranges from 0 to 1. When the value of the AUC is equal to 0.5, the model's accuracy tends to be a random guess, which means it cannot distinguish. When the value of AUC is equal to 1, it means that the model can distinguish the data completely. As shown in the @fig-auc, the value of AUC is 0.6427, which indicates that the model has a moderate discriminative ability, stronger than random guessing but not excellent. According to @fig-auc, the model has some predictive ability in predicting the voter's voting preference (Biden or Trump), but the accuracy is not very good. There is still room for improvement at this AUC level.
+
+
+```{r}
+#| label: fig-important
+#| fig-cap: Variable Importance Plot
+#| echo: false
+
+
+# Fit the logistic regression model
+model <- glm(Biden_Vote ~ Marital_Status + Household_Income + Education_Level + Age + Sex, data = train, family = binomial)
+
+# Obtain a tidy dataframe of the model's coefficients
+tidy_model <- tidy(model)
+
+# Compute the absolute coefficient values
+tidy_model <- tidy_model %>%
+  mutate(abs_coefficient = abs(estimate)) %>%
+  # Group by variable name without the factor level
+  mutate(variable = gsub(".*\\)", "", term)) %>%
+  group_by(variable) %>%
+  # Sum the absolute coefficients for each predictor
+  summarize(importance = sum(abs_coefficient)) %>%
+  # Remove the intercept from the visualization
+  filter(variable != "Intercept")
+
+# Create the variable importance plot
+ggplot(tidy_model, aes(x = reorder(variable, importance), y = importance)) +
+  geom_col(fill = 'steelblue') +
+  coord_flip() +  # Flipping coordinates for horizontal layout
+  xlab("Predictor Variables") +
+  ylab("Sum of Absolute Coefficients") +
+  theme_minimal()
+
+
+```
+
+@fig-important above is a plot of variable importance showing the sum of the absolute values of the coefficients in the logistic regression model. From the above @fig-important, we can see that the length of the bar graph indicates the relative impact of each predictor variable (or level in the case of categorical variables) on the results, with the more extended bar graph indicating a more significant impact on the model predictions. The graph is organized in order of importance from highest to lowest. Since the graph uses absolute values, the bar graph does not indicate direction (positive or negative). Looking at it, the level of education seems to be the most influential variable. This is because, from the chart above, the second, third, fourth, and fifth positions are all education levels. This @fig-important allows for quick visual observation of which variable factors are most influential in the logistic regression model and which factors do not play a role, for example, age, all of which are at the bottom of the significance graph, which means that there is not much of a role. However, further analysis is needed to explain these effects fully.
 
 
 # Discussion {#sec-discussion}
